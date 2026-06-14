@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { User, Mail, Lock, UserPlus, Sparkles, AlertCircle } from "lucide-react";
 import API from "../services/api";
 
 function Register() {
@@ -11,8 +12,28 @@ function Register() {
     password: ""
   });
 
-  const handleRegister = async () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setError("");
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     try {
+      setLoading(true);
       const res = await API.post("/auth/register", {
         name: formData.name,
         email: formData.email,
@@ -20,85 +41,123 @@ function Register() {
       });
 
       console.log("SUCCESS =>", res.data);
-
-      alert("Registration Successful 🚀");
-
       navigate("/login");
 
     } catch (error) {
       console.log(error);
-
-      alert(
-        error?.response?.data?.message ||
-        "Registration Failed"
-      );
+      const errMsg = error?.response?.data?.message || error?.response?.data || error.message || "Registration Failed";
+      setError(typeof errMsg === 'object' ? JSON.stringify(errMsg) : errMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-      <div className="bg-slate-800 p-8 rounded-xl w-96 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0b0f19]">
+      {/* Background Decorative Glows */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
 
-        <h1 className="text-3xl font-bold text-white text-center mb-6">
-          Splitwise Register
-        </h1>
+      <div className="w-full max-w-md glass-card p-8 rounded-2xl animate-fade-in-up relative z-10">
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-4 transform hover:rotate-12 transition-transform duration-300">
+            <Sparkles className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white text-center">
+            Create Account
+          </h1>
+          <p className="text-slate-400 text-sm mt-2 text-center">
+            Get started with Splitwise Clone
+          </p>
+        </div>
 
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              name: e.target.value
-            })
-          }
-          className="w-full p-3 mb-4 rounded bg-slate-700 text-white"
-        />
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm flex items-center gap-3 animate-fade-in-up">
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              email: e.target.value
-            })
-          }
-          className="w-full p-3 mb-4 rounded bg-slate-700 text-white"
-        />
+        <form onSubmit={handleRegister} className="space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              Full Name
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input
+                type="text"
+                name="name"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 rounded-xl form-input text-sm"
+                required
+              />
+            </div>
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              password: e.target.value
-            })
-          }
-          className="w-full p-3 mb-4 rounded bg-slate-700 text-white"
-        />
+          <div>
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 rounded-xl form-input text-sm"
+                required
+              />
+            </div>
+          </div>
 
-        <button
-          onClick={handleRegister}
-          className="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded"
-        >
-          Register
-        </button>
+          <div>
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 rounded-xl form-input text-sm"
+                required
+              />
+            </div>
+          </div>
 
-        <p className="text-gray-300 mt-4 text-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:pointer-events-none mt-2"
+          >
+            {loading ? (
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              <>
+                <span>Sign Up</span>
+                <UserPlus className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </>
+            )}
+          </button>
+        </form>
+
+        <p className="text-slate-400 mt-6 text-center text-sm font-light">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-green-400"
+            className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
           >
-            Login
+            Sign in
           </Link>
         </p>
-
       </div>
     </div>
   );

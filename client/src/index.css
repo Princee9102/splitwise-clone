@@ -1,3 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.07), transparent 45%),
+                radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.07), transparent 45%),
+                #0b0f19;
+    color: #f8fafc;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Glassmorphism Styles */
+.glass-card {
+  background: rgba(22, 28, 45, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.12),
+              0 0 15px 1px rgba(16, 185, 129, 0.05);
+  background: rgba(22, 28, 45, 0.85);
+}
+
+.glass-modal {
+  background: rgba(17, 22, 37, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
+}
+
+/* Interactive Floating Input Field */
+.form-input {
+  background: rgba(13, 17, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease-in-out;
+  color: #f8fafc;
+}
+
+.form-input:focus {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  outline: none;
+  background: rgba(13, 17, 28, 0.85);
+}
+
+.form-input::placeholder {
+  color: #64748b;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle gradient animations */
+@keyframes gradientBg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-text {
+  background: linear-gradient(135deg, #34d399 0%, #3b82f6 50%, #10b981 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientBg 6s ease infinite;
+}
